@@ -1,43 +1,61 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			contacts: [],
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
 			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
+				
+					const res = fetch('https://playground.4geeks.com/contact/agendas/kath')
+					.then()
+					.then(async data =>{
+						const contacts = (await data.json()).contacts;
+						const store = getStore();
+						setStore({ ...store, contacts:contacts })
+					})
+					.catch(()=>{
+						// TODO: check if 200
+					})
+
+				
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
+			createContact: async (contact) =>{
+				const res = await fetch('https://playground.4geeks.com/contact/agendas/kath/contacts', {
+					method:'POST',
+					body: JSON.stringify(contact),
+					headers: {'content-type': 'application/json'}
 				});
+				// TODO: check if 200
+				const actions = getActions();
+				await actions.loadSomeData();
+			},
+			getContact:  (contactId) =>{
+				const store = getStore();
+				const found =  store.contacts.find(contact=> contact.id == contactId );
+				return found;
+			},
+			updateContact: async (contact) => {
+				const res = await fetch(`https://playground.4geeks.com/contact/agendas/kath/contacts/${contact.id}`, {
+					method:'PUT',
+					body: JSON.stringify(contact),
+					headers: {'content-type': 'application/json'}
+				});
+				// TODO: check if 200
 
-				//reset the global store
-				setStore({ demo: demo });
+				const actions = getActions();
+				await actions.loadSomeData();
+			},
+			deleteContact: async (contact)=>{
+				const res = await fetch(`https://playground.4geeks.com/contact/agendas/kath/contacts/${contact.id}`, {
+					method:'DELETE',
+					headers: {'content-type': 'application/json'}
+				});
+				// TODO: check if 200
+
+				const actions = getActions();
+				await actions.loadSomeData();
 			}
+			
 		}
 	};
 };
