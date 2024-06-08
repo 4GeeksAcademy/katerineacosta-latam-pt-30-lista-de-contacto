@@ -28,14 +28,14 @@ export const Home = () => {
 							<div className="col-md-5">
 							<div className="card-body lh-lg">
 								<h5 className="card-title fw-normal">{contact.name}</h5>
-								<p className="card-text text-black-50"><i className="fa-solid fa-location-dot me-2"></i> {contact.address}</p>
-								<p className="card-text text-black-50"><i className="fa-solid fa-phone-flip me-2"></i> {contact.phone}</p>
-								<p className="card-text text-black-50"><i className="fa-solid fa-envelope me-2"></i> {contact.email}</p>
+								<p className="card-text text-black-50"><i className="fa fa-map-marker-alt me-2"></i> {contact.address}</p>
+								<p className="card-text text-black-50"><i className="fa fa-phone me-2"></i> {contact.phone}</p>
+								<p className="card-text text-black-50"><i className="fa fa-envelope me-2"></i> {contact.email}</p>
 							</div>
 							</div>
 							<div className="col-md-4 my-2 text-end">
-								<a className="text-dark me-5" href={'/contact-edit/'+contact.id} ><i className="fa-solid fa-pencil"></i></a>
-								<a className="text-dark" onClick={()=>{actions.setIdToDelete(contact.id)}} href="#deleteModal" data-bs-toggle="modal"><i className="fa-solid fa-trash"></i></a>
+								<a className="text-dark me-5" href={'/contact-edit/'+contact.id} ><i className="fa fa-edit"></i></a>
+								<a className="text-dark" onClick={()=>{actions.setIdToDelete(contact.id)}} href="#deleteModal" data-bs-toggle="modal"><i className="fa fa-trash"></i></a>
 							</div>
 						</div>
 					</div>))}
