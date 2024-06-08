@@ -6,13 +6,14 @@ import { Context } from "../store/appContext";
 import "../../styles/demo.css";
 import { Form } from "../component/form";
 
-export const Demo = () => {
+export const EditContact = () => {
 	const { store, actions } = useContext(Context);
 
 	return (
 		<>
-		<h1>Add a new contact</h1>
+			<h1 className="text-center mt-4">Edit Contact</h1>
 			<Form />
+			
 		</>
 	);
 };

@@ -1,42 +1,71 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 
+import userImagen from "../../img/user_gato.jpg";
+
 import "../../styles/home.css";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 
-	const deleteContact = (contact)=>{
-		const cont = confirm("Are you sure you want to delete " + contact.name)
-		if(cont){
-			actions.deleteContact(contact);
-		}
+	const deleteContact = ()=>{
+			actions.deleteContact(store.contactIdToDelete);
 	}
 
 	return (<>
-	<a type="button" className="btn btn-success" href="/demo"> Add new contacto</a>
-	<div className="mt-5">
-		{ store.contacts.map(contact => (<div className="card mb-3" style={{maxWidth: "540px"}}>
-			<div className="row g-0">
-				<div className="col-md-4">
-					<img src="https://th.bing.com/th/id/OIP.kyzzCvCkMXiLu4_tUP5hCAHaE8?w=284&h=190&c=7&r=0&o=5&dpr=1.5&pid=1.7" className="img-fluid rounded-circle" alt="..."/>
+	<div className="container">
+		<div className="row">
+			<div className="col">
+				<div className="my-3 text-end ">
+					<a type="button" className="btn btn-success" href="/contact-add"> Add new contacto</a>
 				</div>
-				<div className="col-md-8">
-				<div className="card-body">
-					<h5 className="card-title">{contact.name}</h5>
-					<p className="card-text">{contact.address}</p>
-					<p className="card-text">{contact.phone}</p>
-					<p className="card-text">{contact.email}</p>
 				<div>
-					<a class="btn btn-primary" href={'/contact-edit/'+contact.id} >Editar</a>
-					<button type="button" class="btn btn-primary" onClick={()=> deleteContact(contact) }>Eliminar</button>
+					{ store.contacts.length > 0 && store.contacts.map(contact => (<div className="card">
+						<div className="row g-0">
+							<div className="col-md-2 ms-5 text-center">
+								<img src={userImagen} className="my-2 contact__img" alt="Profile picture"/>
+							</div>
+							<div className="col-md-5">
+							<div className="card-body lh-lg">
+								<h5 className="card-title fw-normal">{contact.name}</h5>
+								<p className="card-text text-black-50"><i className="fa-solid fa-location-dot me-2"></i> {contact.address}</p>
+								<p className="card-text text-black-50"><i className="fa-solid fa-phone-flip me-2"></i> {contact.phone}</p>
+								<p className="card-text text-black-50"><i className="fa-solid fa-envelope me-2"></i> {contact.email}</p>
+							</div>
+							</div>
+							<div className="col-md-4 my-2 text-end">
+								<a className="text-dark me-5" href={'/contact-edit/'+contact.id} ><i className="fa-solid fa-pencil"></i></a>
+								<a className="text-dark" onClick={()=>{actions.setIdToDelete(contact.id)}} href="#deleteModal" data-bs-toggle="modal"><i className="fa-solid fa-trash"></i></a>
+							</div>
+						</div>
+					</div>))}
+					{store.contacts.length == 0 && <>
+						<div className="alert alert-warning" role="alert">
+							No tienes contactos, agrega uno!
+						</div>
+					</>}
 				</div>
-				</div>
-				</div>
+
 			</div>
-		</div>))}
-		
-		
+		</div>
+	</div>
+
+	<div className="modal" tabindex="-1" id="deleteModal">
+		<div className="modal-dialog">
+			<div className="modal-content">
+			<div className="modal-header">
+				<h5 className="modal-title">Are you sure?</h5>
+				<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div className="modal-body">
+				<p>If you delete this thing the entire universe will go down!</p>
+			</div>
+			<div className="modal-footer">
+				<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Oh no!</button>
+				<button type="button" onClick={deleteContact} className="btn btn-primary">Yes baby</button>
+			</div>
+			</div>
+		</div>
 	</div>
 	</>)
 };
