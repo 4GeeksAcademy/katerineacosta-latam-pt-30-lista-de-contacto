@@ -25,13 +25,15 @@ export const Form = () => {
 
     const onSubmit = async (event)=>{
         event.preventDefault();
-
-        // TODO: Form Validation
         
         if(contactId != undefined ){
             await actions.updateContact(data);
         }else{
             await actions.createContact(data);
+        }
+        if(store.error){
+            alert("Error: "+ store.error);
+            return;
         }
         navigate('/');
     }

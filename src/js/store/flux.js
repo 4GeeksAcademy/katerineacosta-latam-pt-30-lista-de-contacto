@@ -2,44 +2,78 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			contacts: [],
-			contactIdToDelete: null
+			contactIdToDelete: null,
+			error: null
 		},
 		actions: {
-			loadSomeData: () => {
-					const res = fetch('https://playground.4geeks.com/contact/agendas/kath')
-					.then()
-					.then(async data =>{
-						if(data.status == 404){
-							const actions = getActions()
-							return actions.createAgenda();
-						}
-						const contacts = (await data.json()).contacts;
-						const store = getStore();
-						setStore({ ...store, contacts:contacts })
-					})
-					.catch(()=>{
-						// TODO: check if 200
-					})
+			loadContacts: async () => {
+				let data = null;
+				const store = getStore();
+				setStore({...store, error:null});
+				try{
+					const res = await fetch('https://playground.4geeks.com/contact/agendas/kath');
 
-				
+					if(!res.ok){
+						if(res.status == 404){
+							const actions = getActions();
+							await actions.createAgenda();
+							setStore({...store, contacts:[]});
+							return;
+						}
+						console.log("Error obteniendo contactos");
+						throw "Error obteniendo contactos";
+					}
+
+					data = await res.json();
+					if(!data.contacts){
+						throw "Error en respuesta, contactos no existe";
+					}
+
+					const contacts = data.contacts;
+					setStore({ ...store, contacts:contacts });
+
+				}catch(exception){
+					console.log("Excepcion obteniendo contactos", exception,data);
+					setStore({...store, contacts:[]});
+				}
 			},
 			createAgenda: async () => {
-				const res = await fetch('https://playground.4geeks.com/contact/agendas/kath', {
-					method:'POST'
-				});
-				const actions = getActions()
-				actions.loadSomeData()
-			},
+				try{
+					const res = await fetch('https://playground.4geeks.com/contact/agendas/kath', {
+						method:'POST'
+					});
 
+					if(!res.ok){
+						throw "Error creando Agenda";
+					}
+				}catch(exception){
+					throw exception;
+				}
+			},
 			createContact: async (contact) =>{
-				const res = await fetch('https://playground.4geeks.com/contact/agendas/kath/contacts', {
-					method:'POST',
-					body: JSON.stringify(contact),
-					headers: {'content-type': 'application/json'}
-				});
-				// TODO: check if 200
-				const actions = getActions();
-				await actions.loadSomeData();
+				let store = getStore();
+				setStore({...store, error:null});
+				try{
+					const res = await fetch('https://playground.4geeks.com/contact/agendas/kath/contacts', {
+						method:'POST',
+						body: JSON.stringify(contact),
+						headers: {'content-type': 'application/json'}
+					});
+
+					if(!res.ok){
+						throw "Error creando contacto";
+					}
+
+					const addedContact = await res.json();
+
+					store = getStore()
+					setStore({...store, contacts:[...store.contacts, addedContact]});
+					
+				}catch(exception){
+					console.log("Excepcion obteniendo contactos", exception);
+					setStore({...store, error: exception});
+				}
+				
 			},
 			getContact:  (contactId) =>{
 				const store = getStore();
@@ -47,31 +81,56 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return found;
 			},
 			updateContact: async (contact) => {
-				const res = await fetch(`https://playground.4geeks.com/contact/agendas/kath/contacts/${contact.id}`, {
-					method:'PUT',
-					body: JSON.stringify(contact),
-					headers: {'content-type': 'application/json'}
-				});
-				// TODO: check if 200
+				let store = getStore();
+				setStore({...store, error:null});
+				try{
+					const res = await fetch(`https://playground.4geeks.com/contact/agendas/kath/contacts/${contact.id}`, {
+						method:'PUT',
+						body: JSON.stringify(contact),
+						headers: {'content-type': 'application/json'}
+					});
 
-				const actions = getActions();
-				await actions.loadSomeData();
+					if(!res.ok){
+						throw "Error actualizando contacto.";
+					}
+
+					const updatedContact = await res.json();
+				
+					store = getStore();
+					
+					setStore({...store, contacts:[...store.contacts.filter(x=> x.id != contact.id), updatedContact]});
+				}catch(exception){
+					console.log("Excepcion actualizando contacto", exception);
+					setStore({...store, error: exception});
+				}
+			
 			},
 			deleteContact: async (contactId)=>{
-				const res = await fetch(`https://playground.4geeks.com/contact/agendas/kath/contacts/${contactId}`, {
-					method:'DELETE',
-					headers: {'content-type': 'application/json'}
-				});
-				// TODO: check if 200
+				let store = getStore();
+				setStore({...store, contactIdToDelete:null, error:null});
 
-				const actions = getActions();
-				await actions.loadSomeData();
+				try{
+					const res = await fetch(`https://playground.4geeks.com/contact/agendas/kath/contacts/${contactId}`, {
+						method:'DELETE',
+						headers: {'content-type': 'application/json'}
+					});
+
+					if(!res.ok){
+						throw "Error actualizando contacto.";
+					}
+
+					store = getStore()
+					setStore({...store, contacts: store.contacts.filter(x=> x.id != contactId)});
+				}catch(exception){
+					console.log("Excepcion actualizando contacto", exception);
+					setStore({...store, error: exception});
+				}
 			},
 			setIdToDelete: (contactId)=>{
+				debugger;
 				const store = getStore();
 				setStore({...store, contactIdToDelete: contactId})
 			}
-			
 		}
 	};
 };
