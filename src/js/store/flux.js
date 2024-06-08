@@ -1,7 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			contacts: [],
+			contacts: null,
 			contactIdToDelete: null,
 			error: null
 		},
@@ -127,7 +127,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			setIdToDelete: (contactId)=>{
-				debugger;
 				const store = getStore();
 				setStore({...store, contactIdToDelete: contactId})
 			}

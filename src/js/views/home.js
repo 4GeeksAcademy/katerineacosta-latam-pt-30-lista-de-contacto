@@ -20,7 +20,7 @@ export const Home = () => {
 					<a type="button" className="btn btn-success" href="/contact-add"> Add new contacto</a>
 				</div>
 				<div>
-					{ store.contacts.length > 0 && store.contacts.map(contact => (<div key={contact.id} className="card">
+					{ store.contacts && store.contacts.length > 0 && store.contacts.map(contact => (<div key={contact.id} className="card">
 						<div className="row g-0">
 							<div className="col-md-2 ms-5 text-center">
 								<img src={userImagen} className="my-2 contact__img" alt="Profile picture"/>
@@ -39,7 +39,7 @@ export const Home = () => {
 							</div>
 						</div>
 					</div>))}
-					{store.contacts.length == 0 && <>
+					{store.contacts && store.contacts.length == 0 && <>
 						<div className="alert alert-warning" role="alert">
 							No tienes contactos, agrega uno!
 						</div>
