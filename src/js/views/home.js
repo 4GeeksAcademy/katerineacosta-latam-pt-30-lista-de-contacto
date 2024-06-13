@@ -4,6 +4,7 @@ import { Context } from "../store/appContext";
 import userImagen from "../../img/user_gato.jpg";
 
 import "../../styles/home.css";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
@@ -17,7 +18,7 @@ export const Home = () => {
 		<div className="row">
 			<div className="col">
 				<div className="my-3 text-end ">
-					<a type="button" className="btn btn-success" href="/contact-add"> Add new contacto</a>
+					<Link  className="btn btn-success" to="/contact-add"> Add new contact</Link>
 				</div>
 				<div>
 					{ store.contacts && store.contacts.length > 0 && store.contacts.map(contact => (<div key={contact.id} className="card">
@@ -34,7 +35,7 @@ export const Home = () => {
 							</div>
 							</div>
 							<div className="col-md-4 my-2 text-end">
-								<a className="text-dark me-5" href={'/contact-edit/'+contact.id} ><i className="fa fa-edit"></i></a>
+								<Link className="text-dark me-5" to={'/contact-edit/'+contact.id} ><i className="fa fa-edit"></i></Link>
 								<a className="text-dark" onClick={()=>{actions.setIdToDelete(contact.id)}} href="#deleteModal" data-bs-toggle="modal"><i className="fa fa-trash"></i></a>
 							</div>
 						</div>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {  useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 
 
@@ -66,7 +66,7 @@ export const Form = () => {
                     <div className="d-grid">
                         <button type="submit" className="btn btn-primary">Save</button>
                     </div>
-                    <a type="button" className="btn btn-link p-0" href="/">or get back to contact</a>
+                    <Link className="btn btn-link p-0" to="/" >or get back to contact</Link>
                 </form>
             </div>
         </div>
